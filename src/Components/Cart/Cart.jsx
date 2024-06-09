@@ -14,7 +14,7 @@ import { AddLocation } from "@mui/icons-material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 const items = [1, 1];
-const style = {
+export const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
@@ -25,7 +25,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const initialValues = {
+export const initialValues = {
   streetAddress: "",
   city: "",
   state: "",
@@ -147,7 +147,7 @@ export const Cart = () => {
                 </Grid>
                 <Grid item xs={4}>
                   <Field
-                    name="s=pincode"
+                    name="pincode"
                     as={TextField}
                     label="pincode"
                     variant="outlined"

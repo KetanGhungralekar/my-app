@@ -1,13 +1,18 @@
-import { Avatar, Badge, IconButton } from "@mui/material";
+import { Avatar, Badge, Box, IconButton } from "@mui/material";
 import React from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { pink } from "@mui/material/colors";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import "./Navbar.css"
+import { Person } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const Navbar = () => {
+    const {auth} = useSelector(state=>state);   
+    const navigate = useNavigate();
     return (
-        <div className="px-5 z-50 py-[0.8rem] bg-[#e91e63] lg:px-20 flex justify-between">
+        <Box className="px-5 sticky top-0 z-50 py-[0.8rem] bg-[#e91e63] lg:px-20 flex justify-between">
                 <div className="lg:mr-10 cursor-pointer flex items-centre space-x-4">
                     <li className="logo font-semibold text-gray-300 text-2xl">
                         Zosh Food
@@ -20,7 +25,7 @@ export const Navbar = () => {
                         </IconButton>
                     </div>
                     <div>
-                        <Avatar sx={{bgcolor:"white",color:pink.A400}}></Avatar>
+                        {auth.user?<Avatar sx={{bgcolor:"white",color:pink.A400}}>{auth.user?.fullName[0].toUpperCase()}</Avatar>:<IconButton onClick={()=>navigate("account/login")}><Person/></IconButton>}
                     </div>
                     <div>
                         <IconButton>
@@ -30,6 +35,6 @@ export const Navbar = () => {
                         </IconButton>
                     </div>
                 </div>
-        </div>
+        </Box>
     )
 }
