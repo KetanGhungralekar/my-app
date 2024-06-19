@@ -8,6 +8,7 @@ import {
   LOGIN_FAILURE,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
+  LOGOUT,
   REGISTER_FAILURE,
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
@@ -59,6 +60,7 @@ export const authReducer = (state = initialState, action) => {
         isLoading: false,
         error: null,
         success: true,
+        favourites: action.payload.favourites,
       };
     case REGISTER_FAILURE:
     case GET_USER_FAILURE:
@@ -70,7 +72,9 @@ export const authReducer = (state = initialState, action) => {
             error: action.payload,
             success: false,
         };
+    case LOGOUT:
+      return initialState
     default:
-      return initialState;
+      return state;
   }
 };

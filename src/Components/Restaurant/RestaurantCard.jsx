@@ -2,28 +2,45 @@ import { Card, Chip, IconButton } from "@mui/material";
 import React, { useState } from "react";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Addtofavourites } from "../State/Authentication/Action";
+import { isPresentinFavourites } from "../config/logic";
+import { store } from "../State/Store";
 
-export const RestaurantCard = () => {
-    const [favorite,setfavourite] = useState(false);
+export const RestaurantCard = ({item}) => {
+    const auth = useSelector((store)=>store.auth);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const token = localStorage.getItem("token");
+    console.log(auth);
+    const handleAddToFavourite = ()=>{
+        dispatch(Addtofavourites({token,restaurantId:item.id}))
+    }
+    const handleNavigatetoRestaurant = ()=>{
+        if (item.open){
+            navigate(`/restaurant/${item.address.city}/${item.name}/${item.id}`)
+        }
+    }
     return (
         <Card className="m-5 w-[17rem]">
-            <div className={`relative ${true?'cursor-point':"cursor-not-allowed"}`}>
-                <img className="w-full h-[10rem] rounded-t-md object-cover" src="https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg" alt="" />
+            <div className={`relative ${item?.open?'cursor-point':"cursor-not-allowed"}`}>
+                <img className="w-full h-[10rem] rounded-t-md object-cover" src={item.images[0]} alt="" />
                 <Chip 
                 size="small" 
                 className="absolute top-2 left-2" 
-                color={true?"success":"error"} 
-                label={true?"Open":"closed"} 
+                color={item.open?"success":"error"} 
+                label={item.open?"Open":"closed"} 
                 />
             </div>
             <div className="p-4 textPart lg:flex w-full justify-between">
                 <div className="space-y-1">
-                    <p className="text-lg font-semibold">Indian Fast food</p>
-                    <p className="text-gray-500 text-sm">Juicy Burgers at your disposal</p>
+                    <p onClick={handleNavigatetoRestaurant} className="text-lg font-semibold cursor-pointer">{item.name}</p>
+                    <p className="text-gray-500 text-sm">{item.description}</p>
                 </div>
                 <div>
-                    <IconButton onClick={()=>{setfavourite(!favorite); console.log(favorite)}}>
-                        {favorite?<FavoriteIcon sx={{color:"red"}}/>:<FavoriteBorderIcon/>}
+                    <IconButton onClick={handleAddToFavourite}>
+                        {isPresentinFavourites(auth.favourites,item)?<FavoriteIcon sx={{color:"red"}}/>:<FavoriteBorderIcon/>}
                     </IconButton>
                 </div>
             </div>

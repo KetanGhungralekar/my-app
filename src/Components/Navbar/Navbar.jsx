@@ -7,14 +7,19 @@ import "./Navbar.css"
 import { Person } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { store } from "../State/Store";
 
 export const Navbar = () => {
-    const {auth} = useSelector(state=>state);   
+    const {auth,cart} = useSelector((store)=>store);   
+    console.log(auth);
     const navigate = useNavigate();
+    const handleAvatar = ()=>{
+        navigate("/my-profile")
+    }
     return (
         <Box className="px-5 sticky top-0 z-50 py-[0.8rem] bg-[#e91e63] lg:px-20 flex justify-between">
                 <div className="lg:mr-10 cursor-pointer flex items-centre space-x-4">
-                    <li className="logo font-semibold text-gray-300 text-2xl">
+                    <li onClick={()=>{navigate("/")}} className="logo font-semibold text-gray-300 text-2xl">
                         Zosh Food
                     </li>
                 </div>
@@ -25,11 +30,11 @@ export const Navbar = () => {
                         </IconButton>
                     </div>
                     <div>
-                        {auth.user?<Avatar sx={{bgcolor:"white",color:pink.A400}}>{auth.user?.fullName[0].toUpperCase()}</Avatar>:<IconButton onClick={()=>navigate("account/login")}><Person/></IconButton>}
+                        {auth.user?<Avatar onClick={handleAvatar} sx={{bgcolor:"white",color:pink.A400,cursor:"pointer"}}>{auth.user?.fullname[0].toUpperCase()}</Avatar>:<IconButton onClick={()=>navigate("account/login")}><Person/></IconButton>}
                     </div>
                     <div>
-                        <IconButton>
-                            <Badge color ='secondary' badgeContent={3}>
+                        <IconButton onClick={()=>navigate("/cart")}>
+                            <Badge color ='secondary' badgeContent={cart.cartItems.length}>
                             <ShoppingCartIcon sx={{fontSize:"1.5rem"}}/>
                             </Badge>
                         </IconButton>

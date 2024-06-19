@@ -10,13 +10,16 @@ import { CustomerRouter } from './Routers/CustomerRouter';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from './Components/State/Authentication/Action';
+import { store } from './Components/State/Store';
+import { findCart } from './Components/State/Cart/Action';
 
 function App() {
   const dispatch = useDispatch();
   const token = localStorage.getItem('token')
-  const {auth} = useSelector(state=>state);
+  const auth = useSelector(store=>store.auth);
   useEffect(() => {
-    dispatch(getUser(token))
+    dispatch(getUser(token || auth.token));
+    dispatch(findCart(token || auth.token));
   },[auth.token])
   return (
     <ThemeProvider theme={darkTheme}>

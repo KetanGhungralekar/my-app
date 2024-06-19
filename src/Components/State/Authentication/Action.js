@@ -49,7 +49,7 @@ export const getUser = (token)=>async(dispatch)=>{
                 Authorization: `Bearer ${token}`,
             }}
         )
-        dispatch({type:GET_USER_SUCCESS,payload:data.token});
+        dispatch({type:GET_USER_SUCCESS,payload:data});
         console.log("get user successfull",data);
     }catch(error){
         dispatch({type:GET_USER_FAILURE,payload:error});
@@ -60,7 +60,7 @@ export const getUser = (token)=>async(dispatch)=>{
 export const Addtofavourites = ({token,restaurantId})=>async(dispatch)=>{
     try{
         dispatch({type:ADD_TO_FAVOURITES_REQUEST});
-        const {data} = await api.put(`/api/restarants/add_to_favourites/${restaurantId}`,{},
+        const {data} = await api.put(`/api/restaurants/add_to_favourites/${restaurantId}`,{},
             {headers:{
                 Authorization: `Bearer ${token}`,
             }}

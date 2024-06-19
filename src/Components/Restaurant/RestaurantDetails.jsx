@@ -1,8 +1,13 @@
 import { Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { MenuCard } from "./MenuCard";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { store } from "../State/Store";
+import { get_restaurant_by_id, get_restaurants_categories, get_restaurants_food } from "../State/Restaurant/Action";
+import { getMenuItemsByRestaurantId } from "../State/Menu/Action";
 
 const categories = [
     "pizza",
@@ -18,10 +23,15 @@ const Foodtypes = [
     {label:"Non Vegetarian only",value:"non-vegetarian"},
     {label:"Seasonal",value:"seasonal"},
 ]
-const menu = [1,1,1,1,1];
+const menu1 = [1,1,1,1,1];
 export const RestaurantDetails = () => {
     const [foodtype, setFoodtype] = useState("");
-    const [category, setCategory] = useState("biryanis");
+    const [category, setCategory] = useState("");
+    const {auth,restaurant,menu} = useSelector(store=>store);
+    const {id,city} = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const token = localStorage.getItem("token");
     const handleFilter = (e)=>{
         if (e.target.name === "food-type") {
             setFoodtype(e.target.value);
@@ -30,6 +40,20 @@ export const RestaurantDetails = () => {
             setCategory(e.target.value);
         }
     }
+    useEffect(()=>{
+        dispatch(get_restaurant_by_id({token,id}));
+        dispatch(get_restaurants_categories({token,id}))
+        console.log("foodtype",foodtype)
+        console.log("category",category)
+        if (foodtype === "" || foodtype === "all") {
+            dispatch(getMenuItemsByRestaurantId({token,id,foodCategory:category}))
+        }
+        else{
+            dispatch(getMenuItemsByRestaurantId({token,id,isVeg:foodtype==="vegetarian",isNonveg:foodtype==="non-vegetarian",isSeasonal:foodtype==="seasonal",foodCategory:category}))
+        }
+    },[foodtype, dispatch, token, id, category])
+    console.log(menu);
+    console.log(restaurant);
     return (
         <div className="px-5 lg:px-20">
             <section>
@@ -37,7 +61,7 @@ export const RestaurantDetails = () => {
                 <div>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <img className="w-full h-[40vh] object-cover" src="https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg" alt="" />
+                            <img className="w-full h-[40vh] object-cover" src={restaurant.restarant?.images[0]} alt="" />
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <img className="w-full h-[40vh] object-cover" src="https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg" alt="" />
@@ -48,15 +72,15 @@ export const RestaurantDetails = () => {
                     </Grid>
                 </div>
                 <div className="pb-3 pt-5">
-                    <h1 className="text-4xl font-semibold">Indian Fast Food</h1>
-                    <p className="text-gray-500 mt-1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae neque iusto magni eius illum consectetur laudantium, aspernatur eligendi architecto aliquam deleniti enim molestiae sapiente inventore, totam corporis officia mollitia ex.</p>
+                    <h1 className="text-4xl font-semibold">{restaurant.restarant?.name}</h1>
+                    <p className="text-gray-500 mt-1">{restaurant.restarant?.description}</p>
                     <div className="space-y-3 mt-3">
                     <p className="text-gray-500 flex items-center gap-3 text-xl">
                     <LocationOnIcon/>
                         <span className="font-semibold">Mumbai Maharashtra</span></p>
                         <p className="text-gray-500 flex items-center gap-3 text-xl">
                     <CalendarTodayIcon/>
-                        <span className="font-semibold">Mon-Sun: 9:00AM-9:00PM(Today)</span></p>
+                        <span className="font-semibold">{restaurant.restarant?.opening_hours}</span></p>
                     </div>
                 </div>
             </section>
@@ -76,17 +100,17 @@ export const RestaurantDetails = () => {
                         <Divider/>
                         <div>
                             <Typography variant="h5" sx={{paddingBottom:""}}>Food Category</Typography>
-                            <FormControl className="py-10 space-y-5" component={"fieldset"} value={category}>
-                                <RadioGroup>
-                                    {categories.map((item)=><FormControlLabel key={item}
-                                    value={item} control={<Radio/>} label={item}/>)}
+                            <FormControl className="py-10 space-y-5" component={"fieldset"}>
+                                <RadioGroup onChange={handleFilter} name="category" value={category}>
+                                    {restaurant.categories.map((item)=><FormControlLabel key={item.name}
+                                    value={item.name} control={<Radio/>} label={item.name}/>)}
                                 </RadioGroup>
                             </FormControl>
                         </div>
                     </div>
                 </div>
                 <div className="space-y-5 lg:w-[80%] lg:pl-10">
-                    {menu.map((item)=> <MenuCard/>)}
+                    {menu.menuItems.map((item)=> <MenuCard item={item}/>)}
                 </div>
             </section>
         </div>
