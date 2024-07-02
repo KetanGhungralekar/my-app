@@ -1,5 +1,5 @@
 import { CREATE_CATEGORY_FAILURE, GET_RESTAURANTS_CATEGORIES_FAILURE, GET_RESTAURANTS_CATEGORIES_SUCCESS } from "../Restaurant/ActionType"
-import { CREATE_INGREDIENT_CATEGORY_FAILURE, CREATE_INGREDIENT_CATEGORY_SUCCESS, CREATE_INGREDIENT_SUCCESS, GET_INGREDIENTS, UPDATE_STOCK } from "./ActionType"
+import { CREATE_INGREDIENT_CATEGORY_FAILURE, CREATE_INGREDIENT_CATEGORY_SUCCESS, CREATE_INGREDIENT_SUCCESS, GET_INGREDIENTS, GET_INGREDIENT_CATEGORIES_FAILURE, GET_INGREDIENT_CATEGORIES_SUCCESS, UPDATE_STOCK } from "./ActionType"
 
 const initialState = {
     ingredients: [],
@@ -15,7 +15,7 @@ export const ingredientReducer = (state = initialState, action) => {
                 ...state,
                 ingredients: action.payload,
             }
-        case GET_RESTAURANTS_CATEGORIES_SUCCESS:
+        case GET_INGREDIENT_CATEGORIES_SUCCESS:
             return {
                 ...state,
                 categories: action.payload,
@@ -36,7 +36,7 @@ export const ingredientReducer = (state = initialState, action) => {
                 update: action.payload,
                 ingredients: state.ingredients.map(ingredient => ingredient.id === action.payload.id ? action.payload : ingredient),
             }
-        case GET_RESTAURANTS_CATEGORIES_FAILURE:
+        case GET_INGREDIENT_CATEGORIES_FAILURE:
         case CREATE_CATEGORY_FAILURE:
         case CREATE_INGREDIENT_CATEGORY_FAILURE:
             return {

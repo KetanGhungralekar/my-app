@@ -10,7 +10,7 @@ export const Address = () => {
               Chose Delivery Address
             </h1>
             <div className="flex flex-wrap justify-center gap-4">
-              {[1, 1, 1,1].map((item) => (
+              {[1,1,1,1].map((item) => (
                 <AddressCard
                   item={item}
                   showButton={false}
