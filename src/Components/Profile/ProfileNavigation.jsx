@@ -15,8 +15,6 @@ const menu = [
     {title : "Orders", icon:<ShoppingBagIcon/>},
     {title : "Favourites", icon:<FavoriteIcon/>},
     {title : "Address", icon:<HomeIcon/>},
-    {title : "Payment", icon:<AccountBalanceWalletIcon/>},
-    {title : "Notifications", icon:<NotificationsIcon/>},
     {title : "Events", icon:<EventIcon/>},
     {title : "Logout", icon:<LogoutIcon/>},
 ]
@@ -39,7 +37,7 @@ export const ProfileNavigation = ({open,handleClose}) => {
                 <div className="w-[50vw] lg:w-[20vw] h-[100vh] flex flex-col justify-center text-xl gap-7 pt-16">
                     {menu.map((item,i)=>
                         <>
-                            <div onClick={() => handleNavigate(item)} className="flex items-center space-x-5 px-5 cursor-pointer">
+                            <div onClick={() => handleNavigate(item)} className="flex-col justify-start space-x-5 px-5 cursor-pointer">
                             {item.icon}
                             <span>{item.title}</span>
                              </div>

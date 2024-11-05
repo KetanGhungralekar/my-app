@@ -42,12 +42,67 @@ const validationSchema = Yup.object({
 });
 export const Cart = () => {
   const handleOpenAddressModel = () => setOpen(true);
-  const createOrderUsingSelectedAddress = () => {};
+  const createOrderUsingSelectedAddress = () => {
+
+  };
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
   const {cart,auth} = useSelector((store)=>store);
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
+  // const handleSubmit = async (values) => {
+  //   const data = {
+  //     token: localStorage.getItem("token"),
+  //     data: {
+  //       restaurantid: cart.cartItems[0].food?.restaurant.id,
+  //       deliveryAddress: {
+  //         city: values.city,
+  //         state: values.state,
+  //         pincode: values.pincode,
+  //       }
+  //     }
+  //   };
+
+  //   // Step 1: Dispatch the order creation to your backend
+  //   const orderResponse = await dispatch(createOrder(data));
+    
+  //   if (orderResponse?.data?.order_id) {
+  //     // Step 2: Razorpay options configuration
+  //     const options = {
+  //       key: 'YOUR_RAZORPAY_KEY_ID', // replace with your Razorpay key ID
+  //       amount: orderResponse.data.amount, // Amount is in paisa (100 INR = 10000)
+  //       currency: orderResponse.data.currency,
+  //       name: 'Your App Name',
+  //       description: 'Order Payment',
+  //       order_id: orderResponse.data.order_id,
+  //       handler: function (response) {
+  //         // Step 3: Handle successful payment
+  //         const paymentData = {
+  //           orderCreationId: orderResponse.data.order_id,
+  //           razorpayPaymentId: response.razorpay_payment_id,
+  //           razorpayOrderId: response.razorpay_order_id,
+  //           razorpaySignature: response.razorpay_signature,
+  //         };
+  //         // dispatch(confirmPayment(paymentData)); // Confirm payment on the backend
+  //         handleClose(); // Close form or modal on success
+  //       },
+  //       prefill: {
+  //         name: values.name,
+  //         email: values.email,
+  //         contact: values.contact,
+  //       },
+  //       theme: {
+  //         color: "#3399cc"
+  //       }
+  //     };
+
+  //     // Step 4: Create Razorpay instance and open the payment form
+  //     const razorpay = new window.Razorpay(options);
+  //     razorpay.open();
+  //   } else {
+  //     console.error("Order creation failed", orderResponse);
+  //   }
+  // };
   const handleSubmit = (values) => {
     const data = {
       token:localStorage.getItem("token"),
@@ -62,39 +117,46 @@ export const Cart = () => {
     }
     dispatch(createOrder(data));
     console.log("form values",values);
+    handleClose();
   };
   return (
     <>
       <main className="lg:flex justify-between">
-        <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
-          {cart?.cartItems.map((item) => (
-            <Cartitem item={item}/>
-          ))}
-          <Divider />
+      <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
+        {cart?.cartItems.map((item) => (
+            <Cartitem item={item} />
+        ))}
+      <Divider />
           <div className="billDetails px-5 text-sm">
             <p className="font-extralight py-5 text-xl">Bill Details</p>
             <div className="space-y-3">
-              <div className=" flex justify-between text-gray-400">
+              <div className="flex justify-between text-gray-400">
                 <p>Item Total</p>
                 <p>${cart.cart?.totaPrice || cart.cart?.totalPrice}</p>
               </div>
-              <div className=" flex justify-between text-gray-400">
-                <p>Deliver Fee</p>
+              <div className="flex justify-between text-gray-400">
+                <p>Delivery Fee</p>
                 <p>$21</p>
               </div>
-              <div className=" flex justify-between text-gray-400">
+              <div className="flex justify-between text-gray-400">
                 <p>Platform Fee</p>
                 <p>$5</p>
               </div>
-              <div className=" flex justify-between text-gray-400">
+              <div className="flex justify-between text-gray-400">
                 <p>GST and Restaurant Charges</p>
                 <p>$10</p>
               </div>
               <Divider />
-              <div className=" flex justify-between text-gray-400">
+              <div className="flex justify-between text-gray-400">
                 <p>Total pay</p>
-                <p>${(cart.cart?.totaPrice || cart.cart?.totalPrice)+21+5+10}</p>
+                <p>${(cart.cart?.totaPrice || cart.cart?.totalPrice) + 21 + 5 + 10}</p>
               </div>
+              {/* <button
+                onClick={handleOrder}
+                className="mt-6 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+              >
+                Place Order
+              </button> */}
             </div>
           </div>
         </section>
