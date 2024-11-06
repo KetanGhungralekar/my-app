@@ -20,37 +20,68 @@ import {
   TextField,
 } from "@mui/material";
 import { Formik, useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { UploadImageC } from "../utils/UploadtoCloudnary";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { create_restaurant } from "../../Components/State/Restaurant/Action";
 import { useNavigate } from "react-router-dom";
+import { createMenuItem } from "../../Components/State/Menu/Action";
+import { getIngredientsOfRestaurant } from "../../Components/State/Ingredients/Action";
 
 const initialValues = {
   name: "",
   description: "",
-  Price: "",
-  Category: "",
-  RestaurantId: "",
-  vegetarian: true,
-  seasonal: false,
+  price: "",
+  foodcategory: "",
+  restaurantId: "",
+  Veg: true,
+  Seasonal: false,
   ingredients: [],
   images: [],
 };
 export const CreateMenuForm = () => {
+  const { ingredient } = useSelector((store) => store);
+  console.log(ingredient);
+  const { restaurant } = useSelector((store) => store);
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
-      values.RestaurantId = 2;
+      values.restaurantId = restaurant.usersRestaurant?.id;
+      const data = {
+        name: values.name,
+        description: values.description,
+        price: parseInt(values.price, 10),
+        foodcategory: values.foodcategory,
+        restaurantId: values.restaurantId,
+        Veg: values.Veg,
+        Seasonal: values.Seasonal,
+        ingredients: values.ingredients,
+        images: values.images,
+      };
+      dispatch(createMenuItem({ menu: data, token }));
       console.log(values);
+      values.name = "";
+      values.description = "";
+      values.price = "";
+      values.foodcategory = "";
+      values.Veg = true;
+      values.Seasonal = false;
+      values.ingredients = [];
+      values.images = [];
+      navigate("/admin/restaurants/menu");
     },
   });
   const [uploadImage, setUploadImage] = useState(false);
-
+  useEffect(()=>{
+    dispatch(getIngredientsOfRestaurant({
+        token: localStorage.getItem("token"),
+        id: restaurant.usersRestaurant?.id
+    }))
+},[])
   const handleImageInput = async (e) => {
     const file = e.target.files[0];
     setUploadImage(true);
@@ -138,27 +169,29 @@ export const CreateMenuForm = () => {
               <TextField
                 fullWidth
                 id="Price"
-                name="Price"
+                name="price"
                 label="Price"
                 variant="outlined"
                 onChange={formik.handleChange}
-                value={formik.values.Price}
+                value={formik.values.price}
               ></TextField>
             </Grid>
             <Grid item xs={12} lg={6}>
               <FormControl fullWidth>
                 <InputLabel id="Category">Category</InputLabel>
                 <Select
-                  labelId="Category"
-                  name="Category"
-                  id="Category"
-                  value={formik.values.Category}
+                  labelId="foodcategory"
+                  name="foodcategory"
+                  id="foodcategory"
+                  value={formik.values.foodcategory}
                   label="Category"
                   onChange={formik.handleChange}
                 >
-                  <MenuItem value={"Burger"}>Burger</MenuItem>
-                  <MenuItem value={"Pizza"}>Pizza</MenuItem>
-                  <MenuItem value={"North Indian"}>North Indian</MenuItem>
+                  {restaurant.categories.map((category) => (
+                    <MenuItem key={category.id} value={category}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -171,7 +204,11 @@ export const CreateMenuForm = () => {
                   id="ingredients"
                   multiple
                   value={formik.values.ingredients}
-                  onChange={formik.handleChange}
+                  onChange={(event) => {
+                    // Update selected ingredients with the entire item object
+                    const selectedItems = event.target.value;
+                    formik.setFieldValue("ingredients", selectedItems);
+                  }}
                   input={
                     <OutlinedInput
                       id="select-multiple-chip"
@@ -181,28 +218,27 @@ export const CreateMenuForm = () => {
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                       {selected.map((value) => (
-                        <Chip key={value} label={value} />
+                        <Chip key={value.id} label={value.name} />
                       ))}
                     </Box>
                   )}
-                  //   MenuProps={MenuProps}
                 >
-                  {["kdngg", "fsngjkfgb", "fsngjkrfng"].map((name) => (
-                    <MenuItem key={name} value={name}>
-                      {name}
+                  {ingredient.ingredients.map((item) => (
+                    <MenuItem key={item.id} value={item}>
+                      {item.name}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12} lg={6}>
-            <FormControl fullWidth>
+              <FormControl fullWidth>
                 <InputLabel id="seasonal">IsSeasonal</InputLabel>
                 <Select
                   labelId="seasonal"
-                  name="seasonal"
-                  id="seasonal"
-                  value={formik.values.seasonal}
+                  name="Seasonal"
+                  id="Seasonal"
+                  value={formik.values.Seasonal}
                   label="seasonal"
                   onChange={formik.handleChange}
                 >
@@ -212,13 +248,13 @@ export const CreateMenuForm = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12} lg={6}>
-            <FormControl fullWidth>
+              <FormControl fullWidth>
                 <InputLabel id="vegetarian">isVegetarian</InputLabel>
                 <Select
-                  labelId="vegetarian"
-                  name="vegetarian"
-                  id="vegetarian"
-                  value={formik.values.vegetarian}
+                  labelId="Veg"
+                  name="Veg"
+                  id="Veg"
+                  value={formik.values.Veg}
                   label="vegetarian"
                   onChange={formik.handleChange}
                 >
@@ -229,7 +265,7 @@ export const CreateMenuForm = () => {
             </Grid>
           </Grid>
           <Button variant="contained" color="primary" type="submit">
-            Create Restaurant
+            Create Menu Item
           </Button>
         </form>
       </div>

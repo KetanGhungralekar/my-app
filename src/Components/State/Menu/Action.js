@@ -22,14 +22,16 @@ export const deleteMenuItem = ({id,token}) => async (dispatch) => {
                 Authorization: `Bearer ${token}`,
             },
         });
+        console.log("delete menu item" + data);
         dispatch({ type: DELETE_MENU_ITEM_SUCCESS, payload: data });
     } catch (error) {
         dispatch({ type: DELETE_MENU_ITEM_FAILURE, payload: error });
     }
 }
-export const getMenuItemsByRestaurantId = (reqData) => async (dispatch) => {
+export const getMenuItemsByRestaurantId = ({reqData}) => async (dispatch) => {
     try {
         dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST });
+        console.log("reqData" + reqData);
         const { data } = await api.get(`/api/food/getByRestaurant/${reqData.id}`, {
             params:{
                 isVeg:reqData.isVeg,

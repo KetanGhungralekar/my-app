@@ -38,9 +38,12 @@ export const menuReducer = (state = initialState, action) => {
                 message:null
             }
         case DELETE_MENU_ITEM_SUCCESS:
+            const updatedMenuItems = state.menuItems.filter(item => item.id !== action.payload);
+            console.log("deleted menu items" + action.payload);
+            console.log("updated menu items" + updatedMenuItems);
             return {
                 ...state,
-                menuItems: state.menuItems.filter(item => item.id !== action.payload),
+                menuItems: updatedMenuItems,
                 loading: false,
                 error: null,
                 message:"Menu Item Deleted Successfully"

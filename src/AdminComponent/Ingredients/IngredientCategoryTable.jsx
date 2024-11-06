@@ -2,7 +2,9 @@ import { Box, Card, CardHeader, IconButton, Modal, Paper, Table, TableBody, Tabl
 import CreateIcon from '@mui/icons-material/Create';
 import { Delete } from "@mui/icons-material";
 import { CreateIngredientCategoryForm } from "./CreateIngredientCategoryForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getRestaurantsIngredientCategories } from "../../Components/State/Ingredients/Action";
 const orders = [1,1,1,1,1,1]
 const style = {
   position: 'absolute',
@@ -20,6 +22,15 @@ export const IngredientCategoryTable = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const {ingredient} = useSelector(store=>store);
+  const {restaurant} = useSelector(store=>store);
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(getRestaurantsIngredientCategories({
+        token: localStorage.getItem("token"),
+        id: restaurant.usersRestaurant?.id
+    }))
+},[])
   return (
     <Box>
       <Card className="mt-1">
@@ -37,15 +48,15 @@ export const IngredientCategoryTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((row) => (
+              {ingredient.categories.map((row) => (
                 <TableRow
                   key={row.name}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {1}
+                    {row.id}
                   </TableCell>
-                  <TableCell align="left">{"Name"}</TableCell>
+                  <TableCell align="left">{row.name}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -59,7 +70,7 @@ export const IngredientCategoryTable = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <CreateIngredientCategoryForm/>
+          <CreateIngredientCategoryForm handleClose={handleClose}/>
         </Box>
       </Modal>
     </Box>

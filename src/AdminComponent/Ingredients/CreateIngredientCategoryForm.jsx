@@ -1,15 +1,28 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
 import { IngredientCategoryTable } from "./IngredientCategoryTable";
+import { useDispatch, useSelector } from "react-redux";
+import { createIngredientCategory } from "../../Components/State/Ingredients/Action";
 
-export const CreateIngredientCategoryForm = () => {
+export const CreateIngredientCategoryForm = ({
+    handleClose
+}) => {
     const [formData, setFormData] = useState({
         name: ""
     });
+    const {restaurant} = useSelector(store=>store);
+    const dispatch = useDispatch();
   const handleSubmit = (e) => {
     const data = {
-        name: formData.name
+      ingredientsname: formData.name,
+      restaurantid: restaurant.usersRestaurant?.id
     }
+    dispatch(createIngredientCategory({
+      data: data,
+      token: localStorage.getItem("token")
+    }
+    ))
+    handleClose();
   };
   const handleInputChange = (e) => {
     const {name, value } = e.target;

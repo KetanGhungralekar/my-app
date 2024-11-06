@@ -41,6 +41,7 @@ export const RestaurantDetails = () => {
   const [category, setCategory] = useState("");
   const { auth, restaurant, menu } = useSelector((store) => store);
   const { id, city } = useParams();
+  console.log(menu);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
@@ -58,8 +59,13 @@ export const RestaurantDetails = () => {
     console.log("category", category);
     console.log(restaurant.categories);
     if (foodtype === "" || foodtype === "all") {
-      dispatch(
-        getMenuItemsByRestaurantId({ token, id, foodCategory: category })
+      const data = {
+        token: token,
+        id: id,
+      }
+      dispatch(getMenuItemsByRestaurantId({
+        reqData: data
+      })
       );
     } else {
       dispatch(

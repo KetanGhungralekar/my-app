@@ -3,18 +3,24 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { update_restaurant_status } from "../../Components/State/Restaurant/Action";
 export const RestaurantDetails = () => {
     const {restaurant} = useSelector(store=>store);
+    const dispatch = useDispatch();
     const handleRestaurantStatus = () => {
-
+        dispatch(update_restaurant_status({
+            Restaurant_id:restaurant.usersRestaurant.id,
+            token : localStorage.getItem("token"),
+        }
+        ));
     }
     return (
         <div className="lg:px-20 px-5">
             <div className="flex justify-evenly items-center">
                 <h1 className="text-2xl lg:text-7xl text-center font-bold p-5">{restaurant.usersRestaurant?.name}</h1>
                 <div>
-                    <Button color={true?"primary":"error"} className="py-[1rem] px-[2rem]" variant="contained" onClick={handleRestaurantStatus} size="large">{true?"Close":"Open"}</Button>
+                    <Button color={restaurant.usersRestaurant?.open ?"primary":"error"} className="py-[1rem] px-[2rem]" variant="contained" onClick={handleRestaurantStatus} size="large">{restaurant.usersRestaurant?.open ?"Close":"Open"}</Button>
                 </div>
             </div>
             <Grid container spacing={2}>
@@ -47,9 +53,9 @@ export const RestaurantDetails = () => {
                                 <p className="w-48">Status</p>
                                 <p>
                                     <span className="pr-5">-</span>
-                                    {true?<span className="px-5 py-2 rounded-full bg-green-400">
-                                        Open
-                                    </span>:<span className="px-5 py-2 rounded-full bg-red-400">{
+                                    {restaurant.usersRestaurant?.open?<span className="px-5 py-2 rounded-full bg-green-400">
+                                        {restaurant.usersRestaurant?.open ?"Opened":"Closed"}
+                                    </span>:<span className="px-5 py-2 rounded-full bg-red-500">{
                                         restaurant.usersRestaurant?.open?"Open":"Closed"
                                     }</span>}
                                 </p>
