@@ -29,7 +29,7 @@ export const LoginUser = (reqData)=>async(dispatch)=>{
             localStorage.setItem("token", data.token);
         }
         if (data.role == "ROLE_RESTAURANT_OWNER"){
-            reqData.navigate("/admin/restaurant");
+            reqData.navigate("/admin/restaurants");
         }
         else{
             reqData.navigate("/")

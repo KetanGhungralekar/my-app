@@ -6,6 +6,7 @@ import { Orders } from "./Orders";
 import { Favourites } from "./Favourites";
 import { Address } from "./Address";
 import { Events } from "./Events";
+import { OrderDetails } from "./OrderDetails";
 
 export const Profile = () =>{
     const [open, setOpen] = React.useState(false);
@@ -21,6 +22,7 @@ export const Profile = () =>{
                 <Route path='/favourites' element={<Favourites/>}/>
                 <Route path='/address' element={<Address/>}/>
                 <Route path='/events' element={<Events/>}/>
+                <Route path='/orders/details/:id' element={<OrderDetails/>}/>
                 </Routes>
             </div>
         </div>
